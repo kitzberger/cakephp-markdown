@@ -1,5 +1,5 @@
 {
-    "name": "tanuck/cakephp-markdown",
+    "name": "kitzberger/cakephp-markdown",
     "description": "Cakephp Markdown plugin for CakePHP 4.x",
     "license": "MIT",
     "type": "cakephp-plugin",
@@ -7,6 +7,10 @@
         {
             "name": "Tanuck",
             "email": "tanuck@gmail.com"
+        },
+        {
+            "name": "Philipp Kitzberger",
+            "email": "coding@kitze.net"
         }
     ],
     "require": {
