@@ -9,7 +9,7 @@ CakePHP 4 plugin to parse markdown syntax in your view templates.
 ## Installation
 
 ```
-composer require tanuck/cakephp-markdown:dev-master
+composer require kitzberger/cakephp-markdown:dev-main
 ```
 
 ## Configuration & Usage
