@@ -1,73 +1,49 @@
 <?php
+declare(strict_types=1);
+
 namespace Tanuck\Markdown\Test\TestCase\View\Helper;
 
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
+use cebe\markdown\GithubMarkdown;
+use cebe\markdown\Markdown;
 use Tanuck\Markdown\View\Helper\MarkdownHelper;
 
-/**
- * Tanuck\Markdown\View\Helper\MarkdownHelper Test Case
- */
 class MarkdownHelperTest extends TestCase
 {
+    private MarkdownHelper $markdown;
 
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        $View = new View();
-        $this->markdown = new MarkdownHelper($View);
+        $this->markdown = new MarkdownHelper(new View());
     }
 
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
-        parent::tearDown();
-        unset($View);
         unset($this->markdown);
+        parent::tearDown();
     }
 
-    /**
-     * Test transform method
-     *
-     * @return void
-     */
-    public function testTransform()
+    public function testTransform(): void
     {
-        // test markdown parsing
         $expected = "<h1>Markdown h1 header</h1>\n";
-        $markdown = '# Markdown h1 header';
-        $this->assertEquals($expected, $this->markdown->transform($markdown));
+        $this->assertEquals($expected, $this->markdown->transform('# Markdown h1 header'));
 
-        $this->assertInstanceOf('cebe\markdown\Markdown', $this->markdown->parser);
+        $this->assertInstanceOf(Markdown::class, $this->markdown->parser);
 
-        // check error checking for non string input
         $this->assertNull($this->markdown->transform(1234));
         $this->assertNull($this->markdown->transform(true));
         $this->assertNull($this->markdown->transform([]));
     }
 
-    /**
-     * Test parser instance when on-helper-load config is used.
-     *
-     * @return void
-     */
-    public function testParserClassSetOnLoad()
+    public function testParserClassSetOnLoad(): void
     {
-        $this->markdown = new MarkdownHelper(new View(), ['parser' => 'GithubMarkdown']);
+        $markdown = new MarkdownHelper(new View(), ['parser' => 'GithubMarkdown']);
 
         $expected = "<p><del>Strikethrough text</del></p>\n";
-        $markdown = '~~Strikethrough text~~';
-        $this->assertEquals($expected, $this->markdown->transform($markdown));
+        $this->assertEquals($expected, $markdown->transform('~~Strikethrough text~~'));
 
-        $this->assertInstanceOf('cebe\markdown\GithubMarkdown', $this->markdown->parser);
+        $this->assertInstanceOf(GithubMarkdown::class, $markdown->parser);
     }
 }

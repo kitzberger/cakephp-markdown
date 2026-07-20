@@ -1,42 +1,36 @@
 <?php
+declare(strict_types=1);
+
 namespace Tanuck\Markdown\View\Helper;
 
 use Cake\View\Helper;
 
-/**
- * Markdown Helper
- *
- * Render Markdown in your view templates.
- */
 class MarkdownHelper extends Helper
 {
-
-    /**
-     * Default config
-     *
-     * @var array
-     */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'parser' => 'Markdown',
     ];
 
+    public ?object $parser = null;
+
     /**
-     * Parse Markdown input to HTML 5.
+     * Parse Markdown input to HTML.
      *
-     * @param string $input Markdown to be parsed.
-     * @return void|string if `$input` is not string return null, otherwise return parsed markdown string
+     * @param mixed $input Markdown to be parsed.
+     * @return string|null
      */
-    public function transform($input)
+    public function transform(mixed $input): ?string
     {
         if (!is_string($input)) {
-            return;
+            return null;
         }
 
-        if (!isset($this->parser)) {
+        if ($this->parser === null) {
             $className = "cebe\\markdown\\{$this->getConfig('parser')}";
             $this->parser = new $className();
             $this->parser->html5 = true;
         }
+
         return $this->parser->parse($input);
     }
 }
