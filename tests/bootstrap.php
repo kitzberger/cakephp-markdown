@@ -1,12 +1,15 @@
 <?php
+declare(strict_types=1);
+
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\Log\Engine\FileLog;
 use Cake\Log\Log;
 
-// Path constants to a few helpful things.
-define('DS', DIRECTORY_SEPARATOR);
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
 define('ROOT', dirname(__DIR__) . DS);
 define('CAKE_CORE_INCLUDE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp');
 define('CORE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS);
@@ -30,58 +33,53 @@ Configure::write('App', [
     'baseUrl' => false,
     'dir' => 'src',
     'webroot' => 'webroot',
-    'www_root' => APP . 'webroot',
+    'wwwRoot' => APP . 'webroot',
     'fullBaseUrl' => 'http://localhost',
     'imageBaseUrl' => 'img/',
     'jsBaseUrl' => 'js/',
     'cssBaseUrl' => 'css/',
     'paths' => [
         'plugins' => [APP . 'Plugin' . DS],
-        'templates' => [APP . 'Template' . DS]
-    ]
+        'templates' => [APP . 'Template' . DS],
+    ],
 ]);
 Configure::write('Session', [
-    'defaults' => 'php'
+    'defaults' => 'php',
 ]);
-Cache::config([
+
+Cache::setConfig([
     '_cake_core_' => [
         'engine' => 'File',
         'prefix' => 'cake_core_',
-        'serialize' => true
+        'serialize' => true,
     ],
     '_cake_model_' => [
         'engine' => 'File',
         'prefix' => 'cake_model_',
-        'serialize' => true
+        'serialize' => true,
     ],
     'default' => [
         'engine' => 'File',
         'prefix' => 'default_',
-        'serialize' => true
-    ]
+        'serialize' => true,
+    ],
 ]);
 
-ConnectionManager::config('test', [
-    'className' => 'Cake\Database\Connection',
-    'driver' => 'Cake\Database\Driver\Mysql',
-    'host' => 'localhost',
-    'database' => 'markdown_test',
-    'username' => 'travis',
-    'password' => '',
-    'timezone' => 'UTC'
+ConnectionManager::setConfig('test', [
+    'url' => 'sqlite:///:memory:',
 ]);
 
-Log::config([
+Log::setConfig([
     'debug' => [
-        'engine' => 'Cake\Log\Engine\FileLog',
+        'engine' => FileLog::class,
         'levels' => ['notice', 'info', 'debug'],
         'file' => 'debug',
+        'path' => LOGS,
     ],
     'error' => [
-        'engine' => 'Cake\Log\Engine\FileLog',
+        'engine' => FileLog::class,
         'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
         'file' => 'error',
-    ]
+        'path' => LOGS,
+    ],
 ]);
-
-Plugin::load('Tanuck/Markdown', ['path' => ROOT]);
